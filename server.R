@@ -10,7 +10,7 @@ library(tidyverse)
 library(nufflytics)
 library(shinycssloaders)
 
-as.data.frame.player <- function(x) {
+as.data.frame_player <- function(x) {
   data.frame(
     name = attr(x, 'name'), 
     rating = x$rating,
@@ -23,14 +23,14 @@ as.data.frame.player <- function(x) {
   )
 }
 
-as_data_frame.player <- function(x) {
-  as_data_frame(as.data.frame(x))
+as_data_frame_player <- function(x) {
+  as_data_frame(as.data.frame_player(x))
 }
 
 ratings <- readRDS("data/final_rating.rds")
 CCL_dates <- readRDS("data/CCL_dates.rds")
 
-ratings_table <- ratings$rating %>% map_df(as_data_frame) %>% mutate(ranking = rating - deviation) %>% arrange(desc(ranking)) %>% select(name, ranking, rating, deviation, tot_games, inactivity)
+ratings_table <- ratings$rating %>% map_df(as_data_frame_player) %>% mutate(ranking = rating - deviation) %>% arrange(desc(ranking)) %>% select(name, ranking, rating, deviation, tot_games, inactivity)
 
 deviation_density <- function(d) {
   d <- mutate(d, rating = case_when(inactivity > 30 ~ NA_real_, T~rating)) %>%
